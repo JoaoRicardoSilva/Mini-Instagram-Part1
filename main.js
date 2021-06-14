@@ -16,38 +16,61 @@ class User {
         this.email = email;
         this.password = password;
         this.followers = 0;
-        this.Following = 0;
+        this.following = 0;
     }
 }
 
 // Memory to save new Users
 const memory = [];
 
-//
+// Online state:
+//      0: No user is online
+//      1: Someone is online
+let online = 0;
 
 // Generic function to the user give some input
 const askUser = (str) => window.prompt(str);
 
 // Command Log In
 const logIn = () => {
-    const email = askUser("Enter your email!");
-    let n = 0;
-    let filter = memory.filter((i) => {
-        memory[i].email === email;
-        n = i;
-    });
+    console.log({ memory });
 
-    if (filter) {
-        return;
-    } else {
-        alert("We don’t have that account");
+    let n = -1;
+
+    const email = askUser("Enter your email!");
+
+    // Check if email exist in memory
+    const checkEmail = () => {
+        for (let i = 0; i < memory.length; i++) {
+            if (memory[i].email === email) {
+                n = i;
+            }
+        }
+
+        //If it doesn't
+        if (n < 0) {
+            alert("We don’t have that account");
+            logIn();
+        }
+    };
+    checkEmail();
+
+    console.log({ n });
+
+    const pass = askUser("Enter your password!");
+    if (memory[n].password !== pass) {
+        alert("The password is incorrect");
+        logIn();
+    }
+
+    if (online === 1) {
+        alert("You are already logged in");
         commandsSwitch();
     }
 
-    const password = askUser("Enter your password!");
-    if (memory[n].password !== password) {
-        alert("The password is incorrect");
-    }
+    online = 1;
+    alert(`Welcome ${memory[n].name}`);
+    commandsSwitch();
 };
 
 // Command Sign Up
@@ -57,6 +80,7 @@ const signUp = () => {
     const askEmail = () => {
         const email = askUser("Enter your email!");
 
+        //Check if is an email
         const validateEmail = (email) => {
             // Not real life regex for validate emails
             /^[a-zA-Z0-9]+\@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)
@@ -67,6 +91,21 @@ const signUp = () => {
                   })();
         };
         validateEmail(email);
+
+        //Check if email already exist
+        const emailExist = (email) => {
+            const verifyEmail = memory.filter((e) => {
+                memory[e].email === email;
+            });
+            if (!verifyEmail) {
+                alert("Sorry, that email is already taken");
+                commandsSwitch();
+            }
+        };
+        emailExist(email);
+
+        //Check if someone is logged
+        const log1 = () => {};
 
         return email;
     };
