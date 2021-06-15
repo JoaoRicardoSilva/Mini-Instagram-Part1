@@ -93,7 +93,7 @@ const signUp = () => {
         validateEmail(email);
 
         //Check if email already exist
-        const emailExist = (email) => {
+        const emailExist = () => {
             const verifyEmail = memory.filter((e) => {
                 memory[e].email === email;
             });
@@ -102,7 +102,7 @@ const signUp = () => {
                 commandsSwitch();
             }
         };
-        emailExist(email);
+        emailExist();
 
         //Check if someone is logged
         const log1 = () => {};
