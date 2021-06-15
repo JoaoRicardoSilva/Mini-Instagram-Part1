@@ -1,14 +1,5 @@
 "use strict";
 
-/*
-log in
-sign up
-exit
-search
-log out
-follow
-*/
-
 const miniInstagram = () => {
     // Base class for new Users
     class User {
@@ -50,21 +41,26 @@ const miniInstagram = () => {
                     index = i;
                 }
             }
-
-            //If it doesn't
-            if (index < 0) {
-                alert("We don’t have that account");
-                logIn();
-            }
         };
         checkEmail();
 
         const pass = askUser("Enter your password!");
-        if (memory[index].password !== pass) {
-            alert("The password is incorrect");
-            logIn();
+
+        //If email doesn't exist
+        if (index < 0) {
+            alert("We don’t have that account");
+            commandsSwitch();
         }
 
+        //If the password isn't correct
+        if (index > -1) {
+            if (memory[index].password !== pass) {
+                alert("The password is incorrect");
+                commandsSwitch();
+            }
+        }
+
+        //If is already online
         if (online === 1) {
             alert("You are already logged in");
             commandsSwitch();
@@ -72,7 +68,7 @@ const miniInstagram = () => {
 
         online = 1;
         indexUser = index;
-        alert(`Welcome ${memory[index].name}`);
+        alert(`Welcome, ${memory[index].name}.`);
         commandsSwitch();
     };
 
@@ -85,6 +81,7 @@ const miniInstagram = () => {
 
             //Command for exit askEmail
             const exitEmail = () => {
+                console.log({ email });
                 const regex = email.match(/^exit\*/gi);
                 if (regex) {
                     commandsSwitch();
@@ -93,16 +90,14 @@ const miniInstagram = () => {
             exitEmail();
 
             //Check if is an email
-            const validateEmail = (email) => {
+            const validateEmail = () => {
                 // Not real life regex for validate emails
-                /^[a-zA-Z0-9]+\@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)
-                    ? email
-                    : (() => {
-                          alert("Insert a valid email");
-                          askEmail();
-                      })();
+                if (!/^[a-zA-Z0-9]+\@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)) {
+                    alert("Insert a valid email");
+                    askEmail();
+                }
             };
-            validateEmail(email);
+            validateEmail();
 
             //Check if email already exist
             const emailExist = () => {
@@ -228,7 +223,7 @@ const miniInstagram = () => {
     const commandsSwitch = () => {
         // Get the command from the user
         let command = askUser("What's your command?");
-
+        console.log({ command });
         const regex = command.match(/^([a-zA-Z]+ [a-zA-Z]+)|([a-zA-Z]+)/g);
         console.log(regex);
 
@@ -245,7 +240,7 @@ const miniInstagram = () => {
                 exit();
                 break;
             case "search":
-                console.log("test4");
+                search();
                 commandsSwitch();
                 break;
             case "log out":
