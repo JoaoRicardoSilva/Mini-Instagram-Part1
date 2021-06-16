@@ -16,9 +16,7 @@ const miniInstagram = () => {
     const memory = [];
 
     // Online state:
-    //      0: No user is online
-    //      1: Someone is online
-    let online = 0;
+    let online = false;
 
     // Index in the memory for the user that have log
     let indexUser = -1;
@@ -28,11 +26,17 @@ const miniInstagram = () => {
 
     // Command Log In
     const logIn = () => {
+        //If is someone already online
+        if (online) {
+            alert("You are already logged in");
+            alert("");
+            return;
+        }
+
         //console.log({ memory });
         let index = -1;
-
-        const email = askUser("Enter your email!");
-
+        const email = askUser("Enter your email!").trim();
+        console.log({ email });
         const pass = askUser("Enter your password!");
 
         // Check if email exist in memory
@@ -61,13 +65,7 @@ const miniInstagram = () => {
             }
         }
 
-        //If is someone already online
-        if (online === 1) {
-            alert("You are already logged in");
-            return;
-        }
-
-        online = 1;
+        online = true;
         indexUser = index;
         alert(`Welcome, ${memory[index].name}.`);
         alert("");
@@ -76,10 +74,16 @@ const miniInstagram = () => {
 
     // Command Sign Up
     const signUp = () => {
+        //Check if someone is online
+        if (online) {
+            alert("log out first before you create a new account");
+            alert("");
+            return true;
+        }
+
         const name = askUser("Enter your name!");
-        let email = askUser("Enter your email!");
+        let email = askUser("Enter your email!").trim();
         let stop = false;
-        // let emailLoopVar = null
 
         let emailLoop = () => {
             //Command for exit askEmail
@@ -89,7 +93,11 @@ const miniInstagram = () => {
             }
 
             //Check if is a valid email
-            if (!/^[a-zA-Z0-9]+\@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)) {
+            if (
+                !/^([a-zA-Z0-9\_]+\@[a-zA-Z]+\.[a-zA-Z]+\.[a-zA-Z]+)|^([a-zA-Z0-9\_]+\@[a-zA-Z]+\.[a-zA-Z]+)/.test(
+                    email
+                )
+            ) {
                 alert("Insert a valid email");
                 alert("");
                 return true;
@@ -106,16 +114,11 @@ const miniInstagram = () => {
                 console.log({ memory });
                 if (n === 1) {
                     alert("Sorry, that email is already taken");
+                    alert("");
                     return true;
                 }
             };
             if (emailExist()) {
-                return true;
-            }
-
-            //Check if someone is online
-            if (online === 1) {
-                alert("log out first before you create a new account");
                 return true;
             }
         };
@@ -138,7 +141,8 @@ const miniInstagram = () => {
         alert("Thank you for your registration, welcome!");
         alert("");
 
-        return memory.push(newProfile);
+        memory.push(newProfile);
+        return;
     };
 
     // Command Exit
@@ -146,12 +150,11 @@ const miniInstagram = () => {
 
     // Command Search
     const search = () => {
-        const email = askUser("Enter your email");
         let index = -1;
 
         //Check if User is logged
         const log0 = () => {
-            if (online === 0) {
+            if (online === false) {
                 alert(
                     "Sorry, you have to be logged in to use that functionality"
                 );
@@ -162,6 +165,8 @@ const miniInstagram = () => {
         if (log0()) {
             return;
         }
+
+        const email = askUser("Enter your email").trim();
 
         // Check if email exist in memory
         const checkEmail = () => {
@@ -188,11 +193,13 @@ const miniInstagram = () => {
     };
     // Command Log out
     const logOut = () => {
-        if (online === 0) {
+        if (online === false) {
             alert("Sorry, you have to be logged in to use that functionality");
             alert("");
             return;
         }
+
+        online = false;
 
         alert("You logged out, see you later");
         alert("");
@@ -201,6 +208,12 @@ const miniInstagram = () => {
 
     // Command Follow
     const follow = () => {
+        if (online === false) {
+            alert("Sorry, you have to be logged in to use that functionality");
+            alert("");
+            return;
+        }
+
         const followEmail = askUser(
             "What's the email of the person that you want to folloW?"
         );
@@ -216,6 +229,7 @@ const miniInstagram = () => {
 
             if (index === -1) {
                 alert("That user does not exist");
+                alert("");
                 return true;
             }
         };
@@ -230,6 +244,7 @@ const miniInstagram = () => {
         memory[indexUser].following++;
 
         alert(`You now follow ${memory[index].name}`);
+        alert("");
     };
 
     // Check and execute the command
@@ -243,6 +258,7 @@ const miniInstagram = () => {
         switch (regex[0].toLowerCase()) {
             case "log in":
                 logIn();
+                console.log({ memory });
                 commandsSwitch();
                 break;
             case "sign up":
@@ -255,19 +271,24 @@ const miniInstagram = () => {
                 break;
             case "search":
                 search();
+                console.log({ memory });
                 commandsSwitch();
                 break;
             case "log out":
                 logOut();
+                console.log({ memory });
                 commandsSwitch();
                 break;
             case "follow":
                 follow();
+                console.log({ memory });
                 commandsSwitch();
                 break;
 
             default:
-                window.alert("We don’t have that option");
+                window.alert("We don't have that option");
+                alert("");
+                commandsSwitch();
                 break;
         }
     };
