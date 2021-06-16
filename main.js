@@ -29,10 +29,11 @@ const miniInstagram = () => {
     // Command Log In
     const logIn = () => {
         //console.log({ memory });
-
         let index = -1;
 
         const email = askUser("Enter your email!");
+
+        const pass = askUser("Enter your password!");
 
         // Check if email exist in memory
         const checkEmail = () => {
@@ -44,60 +45,55 @@ const miniInstagram = () => {
         };
         checkEmail();
 
-        const pass = askUser("Enter your password!");
-
         //If email doesn't exist
         if (index < 0) {
-            alert("We don’t have that account");
-            commandsSwitch();
+            alert("We don't have that account");
+            alert("");
+            return;
         }
 
         //If the password isn't correct
         if (index > -1) {
             if (memory[index].password !== pass) {
                 alert("The password is incorrect");
-                commandsSwitch();
+                alert("");
+                return;
             }
         }
 
-        //If is already online
+        //If is someone already online
         if (online === 1) {
             alert("You are already logged in");
-            commandsSwitch();
+            return;
         }
 
         online = 1;
         indexUser = index;
         alert(`Welcome, ${memory[index].name}.`);
-        commandsSwitch();
+        alert("");
+        return;
     };
 
     // Command Sign Up
     const signUp = () => {
         const name = askUser("Enter your name!");
+        let email = askUser("Enter your email!");
+        let stop = false;
+        // let emailLoopVar = null
 
-        const askEmail = () => {
-            const email = askUser("Enter your email!");
-
+        let emailLoop = () => {
             //Command for exit askEmail
-            const exitEmail = () => {
-                console.log({ email });
-                const regex = email.match(/^exit\*/gi);
-                if (regex) {
-                    commandsSwitch();
-                }
-            };
-            exitEmail();
+            if (/^exit\*/gi.test(email)) {
+                stop = true;
+                return false;
+            }
 
-            //Check if is an email
-            const validateEmail = () => {
-                // Not real life regex for validate emails
-                if (!/^[a-zA-Z0-9]+\@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)) {
-                    alert("Insert a valid email");
-                    askEmail();
-                }
-            };
-            validateEmail();
+            //Check if is a valid email
+            if (!/^[a-zA-Z0-9]+\@[a-zA-Z]+\.[a-zA-Z]+$/.test(email)) {
+                alert("Insert a valid email");
+                alert("");
+                return true;
+            }
 
             //Check if email already exist
             const emailExist = () => {
@@ -110,31 +106,37 @@ const miniInstagram = () => {
                 console.log({ memory });
                 if (n === 1) {
                     alert("Sorry, that email is already taken");
-                    askEmail();
+                    return true;
                 }
             };
-            emailExist();
+            if (emailExist()) {
+                return true;
+            }
 
-            //Check if someone is logged
-            const log1 = () => {
-                if (online === 1) {
-                    alert("log out first before you create a new account");
-                    askEmail();
-                }
-            };
-            log1();
-
-            return email;
+            //Check if someone is online
+            if (online === 1) {
+                alert("log out first before you create a new account");
+                return true;
+            }
         };
+
+        while (emailLoop()) {
+            email = askUser("Enter your email!");
+        }
+
+        if (stop === true) {
+            return;
+        }
 
         // Create a new user based on User class
         const newProfile = new User(
             name,
-            askEmail(),
+            email,
             askUser("Enter your password!")
         );
 
         alert("Thank you for your registration, welcome!");
+        alert("");
 
         return memory.push(newProfile);
     };
@@ -153,10 +155,13 @@ const miniInstagram = () => {
                 alert(
                     "Sorry, you have to be logged in to use that functionality"
                 );
-                commandsSwitch();
+                alert("");
+                return true;
             }
         };
-        log0();
+        if (log0()) {
+            return;
+        }
 
         // Check if email exist in memory
         const checkEmail = () => {
@@ -169,23 +174,29 @@ const miniInstagram = () => {
             //If it doesn't
             if (index < 0) {
                 alert("We have no results for that query");
-                commandsSwitch();
+                return true;
             }
         };
-        checkEmail();
+        if (checkEmail()) {
+            return;
+        }
 
         alert(
             `${memory[index].name}\n${memory[index].email}\nFollowers: ${memory[index].followers}\nFollowing: ${memory[index].following}`
         );
+        alert("");
     };
     // Command Log out
     const logOut = () => {
         if (online === 0) {
             alert("Sorry, you have to be logged in to use that functionality");
-            commandsSwitch();
+            alert("");
+            return;
         }
 
         alert("You logged out, see you later");
+        alert("");
+        return;
     };
 
     // Command Follow
@@ -205,10 +216,12 @@ const miniInstagram = () => {
 
             if (index === -1) {
                 alert("That user does not exist");
-                commandsSwitch();
+                return true;
             }
         };
-        emailExist();
+        if (emailExist()) {
+            return;
+        }
 
         // Add 1 follower
         memory[index].followers++;
@@ -230,6 +243,7 @@ const miniInstagram = () => {
         switch (regex[0].toLowerCase()) {
             case "log in":
                 logIn();
+                commandsSwitch();
                 break;
             case "sign up":
                 signUp();
@@ -256,8 +270,6 @@ const miniInstagram = () => {
                 window.alert("We don’t have that option");
                 break;
         }
-
-        console.log(memory);
     };
     commandsSwitch();
 };
