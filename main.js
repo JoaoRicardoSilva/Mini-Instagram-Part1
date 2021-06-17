@@ -21,11 +21,15 @@ const miniInstagram = () => {
     // Index in the memory for the user that have log
     let indexUser = -1;
 
-    // Generic function to the user give some input
+    // Generic function for the user give some input
     const askUser = (str) => window.prompt(str);
 
-    // Command Log In
+    // COMMAND LOG IN
     const logIn = () => {
+        let index = -1;
+        let email = null;
+        let pass = null;
+
         //If is someone already online
         if (online) {
             alert("You are already logged in");
@@ -33,11 +37,8 @@ const miniInstagram = () => {
             return;
         }
 
-        //console.log({ memory });
-        let index = -1;
-        const email = askUser("Enter your email!").trim();
-        console.log({ email });
-        const pass = askUser("Enter your password!");
+        email = askUser("Enter your email!").trim();
+        pass = askUser("Enter your password!");
 
         // Check if email exist in memory
         const checkEmail = () => {
@@ -66,14 +67,19 @@ const miniInstagram = () => {
         }
 
         online = true;
+        //Save outside this function the index in memory of the user that logged
         indexUser = index;
         alert(`Welcome, ${memory[index].name}.`);
         alert("");
         return;
     };
 
-    // Command Sign Up
+    // COMMAND SIGN UP
     const signUp = () => {
+        let name = null;
+        let email = null;
+        let stop = false;
+
         //Check if someone is online
         if (online) {
             alert("log out first before you create a new account");
@@ -81,9 +87,8 @@ const miniInstagram = () => {
             return true;
         }
 
-        const name = askUser("Enter your name!");
-        let email = askUser("Enter your email!").trim();
-        let stop = false;
+        name = askUser("Enter your name!");
+        email = askUser("Enter your email!").trim();
 
         let emailLoop = () => {
             //Command for exit askEmail
@@ -145,12 +150,13 @@ const miniInstagram = () => {
         return;
     };
 
-    // Command Exit
+    // COMMAND EXIT
     const exit = () => alert("You left the program, bye");
 
-    // Command Search
+    // COMMAND SEARCH
     const search = () => {
         let index = -1;
+        let email = null;
 
         //Check if User is logged
         const log0 = () => {
@@ -166,7 +172,7 @@ const miniInstagram = () => {
             return;
         }
 
-        const email = askUser("Enter your email").trim();
+        email = askUser("Enter your email").trim();
 
         // Check if email exist in memory
         const checkEmail = () => {
@@ -191,7 +197,7 @@ const miniInstagram = () => {
         );
         alert("");
     };
-    // Command Log out
+    // COMMAND LOG OUT
     const logOut = () => {
         if (online === false) {
             alert("Sorry, you have to be logged in to use that functionality");
@@ -237,7 +243,7 @@ const miniInstagram = () => {
             return;
         }
 
-        // Add 1 follower
+        // Add 1 follower to the user that was search
         memory[index].followers++;
 
         // Add 1 following to the User
@@ -247,7 +253,7 @@ const miniInstagram = () => {
         alert("");
     };
 
-    // Check and execute the command
+    // CHECK ANS EXECUTE THE COMMANDS
     const commandsSwitch = () => {
         // Get the command from the user
         let command = askUser("What's your command?");
